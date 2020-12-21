@@ -1,31 +1,19 @@
 <template>
-	<div>
-	<el-calendar v-model="value">
-		<template slot="dateCell" slot-scope="{date, data}">
+	<div  style="height: 500px;">
+		<el-calendar v-model="value">
+			<template slot="dateCell" slot-scope="{date, data}">
 				<div>
+					<div>
 					{{ data.day.split('-').slice(2).toString()}}
-				<div v-show="HaveTask(data)" style="color: red;" :class="ClickDay(data)">
-					<p>有任务</p>
+					</div>
+					<div v-show="HaveTask(data)" style="margin-top:15px;">
+						<el-tooltip class="item" effect="dark" :content="Tasknum(data)" placement="top-start">
+							<el-tag type="danger">任务</el-tag>
+						</el-tooltip>
+					</div>
 				</div>
-				</div>
-		</template>
-	</el-calendar>
-	<el-dialog title="添加任务" :visible.sync="dialogFormVisible3">
-		<el-form :model="form">
-			<el-form-item label="任务名称">
-				<el-input style="width:200px" v-model="form.name"></el-input>
-			</el-form-item>
-			<el-form-item label="开始日期">
-				<el-date-picker v-model="form.startdate" type="datetimerange" range-separator="至" start-placeholder="开始时间"
-				 end-placeholder="结束时间" value-format="yyyy-MM-dd HH:mm" format="yyyy-MM-dd HH:mm">
-				</el-date-picker>
-			</el-form-item>
-		</el-form>
-		<div slot="footer" class="dialog-footer">
-			<el-button @click="dialogFormVisible3 = false">取 消</el-button>
-			<el-button type="primary" >确 定</el-button>
-		</div>
-	</el-dialog>
+			</template>
+		</el-calendar>
 	</div>
 </template>
 
@@ -35,26 +23,58 @@
 			return {
 				dialogFormVisible3: false,
 				form: {
+					formId: "",
 					name: "",
-					startdate: ""
+					details: "",
+					startdate: "",
+					enddate: "",
+					position: "",
+					degree: "",
+					completion: 0
 				},
 				value: new Date(),
-				todoData:["2020-12-07","2020-12-17","2020-12-27","2021-01-07"]
+				todoData: []
 			}
 		},
-		methods:{
-			HaveTask:function(data){
-				if(this.todoData.indexOf(data.day)>=0){
+		methods: {
+			HaveTask: function(data) {
+				if (this.todoData.indexOf(data.day) >= 0) {
 					return true;
-				}
-				else{
+				} else {
 					return false;
 				}
 			},
-			ClickDay:function(data){
-				if(data.isSelected){
-					this.todoData.push(data);
+			Tasknum: function(data) {
+				let num=0;
+				for(let i=0;i<this.todoData.length;i++){
+					if (this.todoData[i]==(data.day)) {
+						num++;
+					} 
 				}
+				
+				return "共有"+num+"个任务";
+			}
+		},
+		mounted() {
+			var tasklist = JSON.parse(localStorage.getItem('tasklist'));
+			for (var i = 0; i < tasklist.length; i++) {
+				this.form = tasklist[i];
+				var d = this.form.startdate;
+				var com=this.form.completion;
+				if(com<100){
+					this.todoData.push(d);
+				}
+				
+				this.form = {
+					formId: "",
+					name: "",
+					details: "",
+					startdate: "",
+					enddate: "",
+					position: "",
+					degree: "",
+					completion: 0
+				};
 			}
 		}
 	}
