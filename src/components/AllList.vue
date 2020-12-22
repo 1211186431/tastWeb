@@ -18,10 +18,6 @@
 			</el-col>
 		</el-row>
 		<MyList :tasklist="plist1">
-			<!-- <template slot-scope="child" slot="function" v-if="nsd!='n'">
-				<div v-if="nsd=='s'"> <el-button type="primary" size="small">删除{{child.msg}}</el-button></div>
-				<div v-if="nsd=='d'"> <el-button type="primary" size="small">恢复{{child.msg}}</el-button></div>
-			</template> -->
 			<div slot="n" v-if="nsd!='n'"></div>
 			<div slot="s" v-if="nsd!='s'"></div>
 			<div slot="d" v-if="nsd!='d'"></div>
